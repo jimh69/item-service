@@ -2,6 +2,7 @@ package com.example.itemservice.service;
 
 import com.example.itemservice.model.Item;
 import com.example.itemservice.repository.ItemRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * the controller and repository layers.</p>
  */
 @Service
+@Slf4j
 public class ItemService {
     
     private final ItemRepository itemRepository;
@@ -41,12 +43,18 @@ public class ItemService {
      * @throws IllegalArgumentException if an item with the same UPC already exists
      */
     public Item createItem(String description, Double weight, Double volume, String upc) {
+        log.info("Creating new item with description: {}, weight: {}, volume: {}, UPC: {}", 
+                description, weight, volume, upc);
+        
         if (itemRepository.existsByUpc(upc)) {
+            log.warn("Attempted to create item with duplicate UPC: {}", upc);
             throw new IllegalArgumentException("An item with UPC '" + upc + "' already exists");
         }
         
         Item newItem = Item.create(description, weight, volume, upc);
-        return itemRepository.save(newItem);
+        Item savedItem = itemRepository.save(newItem);
+        log.info("Successfully created item with ID: {}", savedItem.getId());
+        return savedItem;
     }
     
     /**
@@ -56,6 +64,7 @@ public class ItemService {
      * @return an Optional containing the item if found
      */
     public Optional<Item> getItemById(UUID id) {
+        log.debug("Retrieving item by ID: {}", id);
         return itemRepository.findById(id);
     }
     
@@ -66,6 +75,7 @@ public class ItemService {
      * @return an Optional containing the item if found
      */
     public Optional<Item> getItemByUpc(String upc) {
+        log.debug("Retrieving item by UPC: {}", upc);
         return itemRepository.findByUpc(upc);
     }
     

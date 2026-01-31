@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Define Spring properties -->
+    <springProperty name="appVersion" source="spring.application.version" defaultValue="0.0.1-SNAPSHOT"/>
+    
+    <!-- Define log file paths using Spring properties -->
+    <property name="LOG_PATH" value="logs" />
+    <property name="LOG_FILE_REQUESTS" value="${LOG_PATH}/requests-${appVersion}.log" />
+    <property name="LOG_FILE_RESPONSES" value="${LOG_PATH}/responses-${appVersion}.log" />
+    <property name="LOG_FILE_SERVICE" value="${LOG_PATH}/service-${appVersion}.log" />
+    <property name="LOG_FILE_APPLICATION" value="${LOG_PATH}/application-${appVersion}.log" />
+    
+    <!-- Console appender for development -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Application logs appender -->
+    <appender name="FILE_APPLICATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_APPLICATION}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_APPLICATION}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Requests log appender -->
+    <appender name="FILE_REQUESTS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_REQUESTS}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_REQUESTS}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Responses log appender -->
+    <appender name="FILE_RESPONSES" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_RESPONSES}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_RESPONSES}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Service log appender -->
+    <appender name="FILE_SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_SERVICE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_SERVICE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Logger for request logging -->
+    <logger name="com.example.itemservice.logging.RequestLoggingFilter" level="INFO" additivity="false">
+        <appender-ref ref="FILE_REQUESTS" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- Logger for response logging -->
+    <logger name="com.example.itemservice.logging.ResponseLoggingFilter" level="INFO" additivity="false">
+        <appender-ref ref="FILE_RESPONSES" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- Logger for service layer -->
+    <logger name="com.example.itemservice.service" level="INFO" additivity="false">
+        <appender-ref ref="FILE_SERVICE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_APPLICATION" />
+    </root>
+</configuration>
