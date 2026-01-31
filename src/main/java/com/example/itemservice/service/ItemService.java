@@ -2,7 +2,6 @@ package com.example.itemservice.service;
 
 import com.example.itemservice.model.Item;
 import com.example.itemservice.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +26,6 @@ public class ItemService {
      *
      * @param itemRepository the repository to use for data operations
      */
-    @Autowired
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }

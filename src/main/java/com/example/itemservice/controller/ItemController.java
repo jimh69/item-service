@@ -3,7 +3,6 @@ package com.example.itemservice.controller;
 import com.example.itemservice.model.Item;
 import com.example.itemservice.service.ItemService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +36,6 @@ public class ItemController {
      *
      * @param itemService the service to use for business logic
      */
-    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }

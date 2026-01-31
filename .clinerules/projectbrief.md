@@ -1,7 +1,9 @@
 # Project Brief: Item Service API
 
 ## Project Overview
-A RESTful API built with Spring Boot for managing a collection of items. This service provides basic CRUD operations for items with in-memory storage that can be easily replaced with a database.
+A RESTful API built with Spring Boot for managing a collection of items. 
+This is (for now) intended to be a technology and best practices demonstrator project.
+This service provides basic CRUD operations for items with in-memory storage that can be easily replaced with a database.
 
 ## Core Requirements
 - **RESTful API** with standard HTTP methods (GET, POST, PUT, DELETE)
@@ -35,6 +37,8 @@ A RESTful API built with Spring Boot for managing a collection of items. This se
 - **Code Generation**: Lombok
 
 ## Future Considerations
+- log4j
+- Spring Cloud Config integration
 - Database integration (Spring Data JPA)
 - Authentication and authorization
 - API versioning
