@@ -23,6 +23,11 @@
         <appender-ref ref="CONSOLE" />
     </logger>
 
+    <logger name="com.example.itemservice.config" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_SERVICE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
