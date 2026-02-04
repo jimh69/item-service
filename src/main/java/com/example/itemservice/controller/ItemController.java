@@ -2,7 +2,10 @@ package com.example.itemservice.controller;
 
 import com.example.itemservice.model.Item;
 import com.example.itemservice.service.ItemService;
+import com.example.itemservice.config.ConfigPoller;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,14 +33,17 @@ import java.util.UUID;
 public class ItemController {
     
     private final ItemService itemService;
+    private final ConfigPoller configPoller;
     
     /**
-     * Constructs an ItemController with the specified service.
+     * Constructs an ItemController with the specified services.
      *
      * @param itemService the service to use for business logic
+     * @param configPoller the configuration poller for manual refresh
      */
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, ConfigPoller configPoller) {
         this.itemService = itemService;
+        this.configPoller = configPoller;
     }
     
     /**
@@ -147,5 +153,33 @@ public class ItemController {
                         .contains(description.toLowerCase()))
                 .toList();
         return ResponseEntity.ok(matchingItems);
+    }
+    
+    /**
+     * Manually triggers a configuration refresh from Spring Cloud Config Server.
+     *
+     * @return a message indicating the result of the refresh operation
+     */
+    @PostMapping("/config/refresh")
+    public ResponseEntity<String> refreshConfiguration() {
+        var changedProperties = configPoller.refreshConfiguration();
+        if (changedProperties.iterator().hasNext()) {
+            return ResponseEntity.ok("Configuration refreshed. Changed properties: " + 
+                String.join(", ", changedProperties));
+        } else {
+            return ResponseEntity.ok("Configuration checked - no changes detected");
+        }
+    }
+    
+    /**
+     * Gets the current configuration polling status.
+     *
+     * @return the polling status
+     */
+    @GetMapping("/config/status")
+    public ResponseEntity<String> getConfigStatus() {
+        String status = configPoller.isPollingEnabled() ? "enabled" : "disabled";
+        return ResponseEntity.ok("Configuration polling is " + status + 
+            ". Polling every 30 seconds for changes.");
     }
 }
