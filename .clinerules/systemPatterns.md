@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-The Item Service API follows a layered architecture pattern with clear separation of concerns:
+The Item Service API follows a layered architecture pattern with clear separation of concerns and production-ready configuration management:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -17,6 +17,9 @@ The Item Service API follows a layered architecture pattern with clear separatio
 ├─────────────────────────────────────────────────────────┤
 │                      Data Layer                         │
 │                   (In-Memory Storage)                   │
+├─────────────────────────────────────────────────────────┤
+│                   Configuration Layer                   │
+│              (Spring Cloud Config Client)               │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -42,19 +45,29 @@ The Item Service API follows a layered architecture pattern with clear separatio
 - **Features**: Proper HTTP status codes, error handling, input validation
 - **Benefits**: Clean separation between web layer and business logic
 
+### 5. Configuration Management Pattern
+- **ConfigPoller**: Automatic configuration polling every 30 seconds
+- **ConfigServerConnectionMonitor**: Connection status monitoring and logging
+- **Benefits**: Externalized configuration with automatic refresh capabilities
+
 ## Component Relationships
 
 ### Core Dependencies
 ```
 ItemController → ItemService → ItemRepository → InMemoryItemRepository
+ItemController → ConfigPoller → ContextRefresher
+ConfigPoller → ConfigServerConnectionMonitor
 ```
 
 ### Spring Framework Integration
 - **@RestController**: Exposes REST endpoints
 - **@Service**: Business logic layer
 - **@Repository**: Data access layer
+- **@Configuration**: Configuration components
 - **@Autowired**: Dependency injection
 - **@Valid**: Input validation
+- **@Scheduled**: Automatic configuration polling
+- **@EventListener**: Application lifecycle monitoring
 
 ## Thread Safety Patterns
 
@@ -81,6 +94,20 @@ ItemController → ItemService → ItemRepository → InMemoryItemRepository
 - **IllegalArgumentException**: Business rule violations
 - **ValidationException**: Input validation failures
 - **Graceful Degradation**: Return appropriate error responses
+
+## Configuration Management Patterns
+
+### Spring Cloud Config Integration
+- **Automatic Polling**: Every 30 seconds via @Scheduled
+- **Manual Refresh**: POST /api/items/config/refresh endpoint
+- **Status Monitoring**: GET /api/items/config/status endpoint
+- **Connection Monitoring**: Detailed logging of config server connection attempts
+
+### Configuration Properties
+- **config.polling.enabled**: Enable/disable automatic polling
+- **config.polling.interval**: Polling interval in milliseconds
+- **spring.cloud.config.uri**: Config server URL
+- **spring.cloud.config.fail-fast**: Fail startup if config unavailable
 
 ## Future Database Integration Pattern
 
@@ -143,11 +170,19 @@ public class DatabaseItemRepository implements ItemRepository
 ## Monitoring and Observability
 
 ### Logging Strategy
-- **Structured Logging**: Consistent log format
+- **Structured Logging**: Consistent log format with Logback
 - **Level Configuration**: INFO for normal operations, DEBUG for troubleshooting
 - **Correlation IDs**: Track requests across components
+- **Configuration Logging**: Detailed config server connection monitoring
 
 ### Metrics Collection
 - **Response Times**: Monitor API performance
 - **Error Rates**: Track system reliability
 - **Resource Usage**: Monitor memory and CPU utilization
+- **Configuration Changes**: Track configuration refresh events
+
+### Production Readiness
+- **Health Checks**: Ready for Spring Boot Actuator integration
+- **Configuration Status**: Manual and automatic status endpoints
+- **Error Handling**: Comprehensive error responses with appropriate HTTP codes
+- **Documentation**: Swagger/OpenAPI integration for API documentation

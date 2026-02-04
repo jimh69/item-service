@@ -4,9 +4,10 @@
 
 ### Core Framework
 - **Java 21**: Modern Java version with latest features and performance improvements
-- **Spring Boot 3.2.2**: Framework for building production-ready applications
+- **Spring Boot 4.0.2**: Framework for building production-ready applications
 - **Spring Web**: RESTful web services support
 - **Spring Validation**: Input validation using Jakarta Bean Validation
+- **Spring Cloud 2025.1.1**: Configuration management and cloud-native features
 
 ### Build & Dependencies
 - **Maven 3.9.9**: Build automation and dependency management
@@ -46,9 +47,11 @@
 
 ### Configuration
 - **Application Properties**: `src/main/resources/application.properties`
+- **Bootstrap Configuration**: `src/main/resources/bootstrap.yml`
 - **Server Port**: 8080 (configurable)
 - **Logging**: INFO level for application, UTC timezone for timestamps
 - **Validation**: Enabled with exception throwing on validation failures
+- **Spring Cloud Config**: Externalized configuration with automatic polling
 
 ## Technical Constraints
 
@@ -66,7 +69,8 @@
 
 ### Compatibility Constraints
 - **Java Version**: Minimum Java 21 required
-- **Spring Boot**: Version 3.2.2 with Jakarta EE 9+ support
+- **Spring Boot**: Version 4.0.2 with Jakarta EE 9+ support
+- **Spring Cloud**: Version 2025.1.1 for configuration management
 - **Maven**: Compatible with Maven 3.6+
 - **Database**: Currently in-memory only, designed for future database integration
 
@@ -75,7 +79,9 @@
 ### Runtime Dependencies
 - **Spring Boot Starter Web**: Web MVC framework and embedded Tomcat
 - **Spring Boot Starter Validation**: Bean validation support
+- **Spring Cloud Starter Config**: Configuration management client
 - **Lombok**: Runtime dependency for generated code
+- **Springdoc OpenAPI**: Swagger/OpenAPI documentation
 
 ### Test Dependencies
 - **Spring Boot Starter Test**: Testing utilities and frameworks
@@ -110,21 +116,41 @@
 - **Maven Integration**: Automatic dependency resolution and build management
 - **Hot Reload**: Spring Boot DevTools for faster development cycles
 
+## Configuration Management
+
+### Spring Cloud Config Integration
+- **Config Server URL**: http://localhost:8888/config
+- **Environment**: dev profile
+- **Branch**: main
+- **Authentication**: Basic auth with configuser/configpass
+- **Retry Configuration**: 3 attempts with exponential backoff
+- **Fail Fast**: Disabled for graceful degradation
+
+### Configuration Polling
+- **Automatic Polling**: Enabled by default, every 30 seconds
+- **Manual Refresh**: POST /api/items/config/refresh endpoint
+- **Status Monitoring**: GET /api/items/config/status endpoint
+- **Connection Monitoring**: Detailed logging of config server connection attempts
+
 ## Deployment Considerations
 
 ### Local Development
 - **Embedded Server**: Tomcat server included in JAR
-- **Configuration**: Environment-specific properties
-- **Logging**: Console output with structured format
+- **Configuration**: Environment-specific properties with Spring Cloud Config
+- **Logging**: Console output with structured format using Logback
+- **Monitoring**: Configuration status endpoints for operational visibility
 
 ### Production Deployment
 - **JAR Packaging**: Self-contained executable JAR
-- **Environment Variables**: Externalize configuration
+- **Environment Variables**: Externalize configuration via Spring Cloud Config
 - **Health Checks**: Ready for Spring Boot Actuator integration
-- **Monitoring**: Logging and metrics ready for production monitoring
+- **Monitoring**: Comprehensive logging and configuration status endpoints
+- **Configuration Management**: Externalized configuration with automatic refresh
 
 ### Future Enhancements
 - **Docker Support**: Containerization for consistent deployment
 - **Cloud Native**: Kubernetes and cloud platform support
 - **CI/CD**: GitHub Actions or similar for automated deployment
 - **Monitoring**: Integration with monitoring tools (Prometheus, Grafana)
+- **Authentication**: Spring Security integration for API protection
+- **Database Integration**: Spring Data JPA for persistent storage
