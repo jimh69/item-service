@@ -10,23 +10,37 @@
 
     <logger name="com.example.common.logging.RequestLoggingFilter" level="INFO" additivity="false">
         <appender-ref ref="FILE_REQUESTS" />
-        <appender-ref ref="CONSOLE" />
     </logger>
 
     <logger name="com.example.common.logging.ResponseLoggingFilter" level="INFO" additivity="false">
         <appender-ref ref="FILE_RESPONSES" />
-        <appender-ref ref="CONSOLE" />
     </logger>
 
     <logger name="com.example.itemservice" level="INFO" additivity="false">
         <appender-ref ref="FILE_SERVICE" />
         <appender-ref ref="CONSOLE" />
     </logger>
+    
+    <!-- Filter ItemService business logic logs to file only, keep application startup on console -->
+    <logger name="com.example.itemservice.service.ItemService" level="INFO" additivity="false">
+        <appender-ref ref="FILE_SERVICE" />
+    </logger>
 
     <logger name="com.example.itemservice.config" level="DEBUG" additivity="false">
         <appender-ref ref="FILE_SERVICE" />
         <appender-ref ref="CONSOLE" />
     </logger>
+
+    <!-- reduce log noise -->
+    <logger name="io.swagger.v3.core.converter.ModelConverterContextImpl" level="INFO" />
+    <logger name="org.apache.catalina.util.LifecycleBase" level="INFO" /> 
+    <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="INFO" />
+    <logger name="org.springframework.cloud.config" level="INFO" />
+    <logger name="org.springframework.cloud.config.client.ConfigServerConfigDataLoader" level="WARN" />
+    <logger name="org.springframework.cloud.context" level="INFO" />
+    <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="INFO" />
+    <logger name="org.springframework.core.env.StandardEnvironment" level="INFO" />
+    <logger name="sun.net.www.protocol.http.HttpURLConnection" level="INFO" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE" />

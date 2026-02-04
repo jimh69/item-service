@@ -73,20 +73,20 @@ public class ConfigPoller {
         }
 
         try {
-            log.info("Polling Spring Cloud Config Server for configuration changes...");
+            log.trace("Polling Spring Cloud Config Server for configuration changes...");
             
             // Refresh configuration and get list of changed properties
             var refreshResult = contextRefresher.refresh();
             
             if (refreshResult.isEmpty()) {
-                log.info("No configuration changes detected");
+                log.trace("No configuration changes detected");
             } else {
                 log.info("Configuration changes detected and applied: {}", refreshResult);
             }
         } catch (Exception e) {
             // Log failures at INFO level as requested
             log.info("Failed to poll Spring Cloud Config Server: {}", e.getMessage());
-            log.debug("Polling failure details", e);
+            log.info("Polling failure details", e);
         }
     }
 
@@ -102,7 +102,7 @@ public class ConfigPoller {
     @EventListener
     public void onApplicationReady(ApplicationReadyEvent event) {
         isApplicationReady = true;
-        log.info("Application ready - configuration polling enabled");
+        log.trace("Application ready - configuration polling enabled");
     }
 
     /**
