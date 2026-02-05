@@ -1,6 +1,7 @@
 package com.example.itemservice.repository;
 
 import com.example.itemservice.model.Item;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.UUID;
  * It can be easily implemented with different storage mechanisms
  * (in-memory, database, etc.) while maintaining the same API.</p>
  */
+@Repository
 public interface ItemRepository {
     
     /**

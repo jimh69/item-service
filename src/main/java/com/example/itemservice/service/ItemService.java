@@ -2,33 +2,38 @@ package com.example.itemservice.service;
 
 import com.example.itemservice.model.Item;
 import com.example.itemservice.repository.ItemRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service layer for managing item business logic.
+ * Service layer for managing items.
  * 
- * <p>This service provides the business logic for item operations,
- * including validation, error handling, and orchestration of
- * repository operations. It acts as an intermediary between
- * the controller and repository layers.</p>
+ * <p>This service provides business logic for item operations and acts as an
+ * intermediary between the controller and repository layers. It handles
+ * validation, business rules, and orchestration of operations.</p>
+ * 
+ * @author Item Service
+ * @version 1.0
  */
 @Service
-@Slf4j
 public class ItemService {
+    
+    private static final Logger log = LoggerFactory.getLogger(ItemService.class);
     
     private final ItemRepository itemRepository;
     
     /**
      * Constructs an ItemService with the specified repository.
      *
-     * @param itemRepository the repository to use for data operations
+     * @param itemRepository the repository for item data access
      */
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(@Qualifier("databaseItemRepository") ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
     
@@ -51,7 +56,12 @@ public class ItemService {
             throw new IllegalArgumentException("An item with UPC '" + upc + "' already exists");
         }
         
-        Item newItem = Item.create(description, weight, volume, upc);
+        Item newItem = Item.builder()
+                .description(description)
+                .weight(weight)
+                .volume(volume)
+                .upc(upc)
+                .build();
         Item savedItem = itemRepository.save(newItem);
         log.info("Successfully created item with ID: {}", savedItem.getId());
         return savedItem;
