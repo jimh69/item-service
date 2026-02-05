@@ -12,9 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.core.io.ClassPathResource;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -26,6 +23,8 @@ import java.util.Map;
  * automatic failover to in-memory storage when the database is unavailable.
  * It uses Spring's conditional annotations to enable/disable database features
  * based on configuration and availability.</p>
+ * 
+ * <p>Note: Database migrations are now handled by Flyway, not DataSourceInitializer.</p>
  */
 @Configuration
 @ConditionalOnProperty(name = "database.enabled", havingValue = "true", matchIfMissing = true)
@@ -49,26 +48,6 @@ public class DatabaseConfiguration {
         dataSource.setUsername(databaseProperties.getUsername());
         dataSource.setPassword(databaseProperties.getPassword());
         return dataSource;
-    }
-    
-    /**
-     * Creates a DataSourceInitializer to run Flyway migrations.
-     * 
-     * @param dataSource the configured DataSource
-     * @return DataSourceInitializer instance
-     */
-    @Bean
-    @ConditionalOnBean(DataSource.class)
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
-        DataSourceInitializer initializer = new DataSourceInitializer();
-        initializer.setDataSource(dataSource);
-        
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("db/migration/V1__create_item_table.sql"));
-        populator.setIgnoreFailedDrops(true); // Ignore if table already exists
-        initializer.setDatabasePopulator(populator);
-        
-        return initializer;
     }
     
     /**

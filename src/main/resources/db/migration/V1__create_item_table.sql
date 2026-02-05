@@ -1,12 +1,7 @@
--- JPA-Compatible Item Table Schema
--- This matches exactly what JPA/Hibernate expects
+-- V1__create_item_table.sql
+-- Creates the item table for the Item Service API
 
--- Drop existing table and objects to ensure clean JPA schema
-DROP TABLE IF EXISTS item CASCADE;
-DROP TRIGGER IF EXISTS update_item_updated_at ON item;
-DROP FUNCTION IF EXISTS update_updated_at_column();
-
--- Create table that matches JPA expectations exactly
+-- Create table that matches JPA entity expectations
 CREATE TABLE item (
     id UUID PRIMARY KEY,
     description VARCHAR(255) NOT NULL,
@@ -16,8 +11,6 @@ CREATE TABLE item (
     created_at TIMESTAMP WITHOUT TIME ZONE,
     updated_at TIMESTAMP WITHOUT TIME ZONE
 );
-
-
 
 -- Indexes for performance
 CREATE INDEX idx_item_description ON item(description);
