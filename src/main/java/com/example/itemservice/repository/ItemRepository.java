@@ -52,9 +52,8 @@ public interface ItemRepository {
      * Deletes an item by its unique identifier.
      *
      * @param id the UUID of the item to delete
-     * @return true if the item was found and deleted, false otherwise
      */
-    boolean deleteById(UUID id);
+    void deleteById(UUID id);
     
     /**
      * Checks if an item with the given UPC already exists.

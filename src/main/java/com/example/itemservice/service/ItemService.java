@@ -127,6 +127,11 @@ public class ItemService {
      * @return true if the item was found and deleted, false otherwise
      */
     public boolean deleteItem(UUID id) {
-        return itemRepository.deleteById(id);
+        try {
+            itemRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

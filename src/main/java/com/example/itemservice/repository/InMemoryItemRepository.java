@@ -96,17 +96,15 @@ public class InMemoryItemRepository implements ItemRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteById(UUID id) {
+    public void deleteById(UUID id) {
         if (id == null) {
-            return false;
+            return;
         }
         
         Item removedItem = items.remove(id);
         if (removedItem != null) {
             itemsByUpc.remove(removedItem.getUpc());
-            return true;
         }
-        return false;
     }
     
     /**
