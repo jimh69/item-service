@@ -2,6 +2,8 @@ package com.example.itemservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -12,12 +14,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * 
  * Features:
  * - RESTful API with standard HTTP methods (GET, POST, PUT, DELETE)
- * - Thread-safe in-memory data storage using ConcurrentHashMap
  * - Comprehensive input validation using Jakarta Bean Validation
  * - Layered architecture with clear separation of concerns
  * - Spring Cloud Config client with automatic polling every 30 seconds
  */
 @SpringBootApplication
+@EntityScan("com.example.itemservice.model") 
+@EnableJpaRepositories("com.example.itemservice.repository")
 @EnableScheduling
 public class ItemServiceApplication {
 

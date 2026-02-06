@@ -9,6 +9,9 @@ import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.boot.context.event.SpringApplicationEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Monitors Spring Cloud Config Server connection status and logs debug messages.
@@ -20,6 +23,25 @@ import org.springframework.context.event.EventListener;
 @Configuration
 @Slf4j
 public class ConfigServerConnectionMonitor {
+
+    private final Environment env;
+
+    public ConfigServerConnectionMonitor(Environment env) {
+        this.env = env;
+    }
+
+    @PostConstruct
+    public void logConfig() {
+        String host = env.getProperty("database.host");
+        String port = env.getProperty("database.port");
+        String name = env.getProperty("database.name");
+        
+        log.info("Config Server Properties - Host: {}, Port: {}, DB: {}", host, port, name);
+        
+        if (host == null || port == null || name == null) {
+            throw new IllegalStateException("Database properties not loaded from Config Server");
+        }
+    }
 
     /**
      * Logs when the application environment is being prepared.

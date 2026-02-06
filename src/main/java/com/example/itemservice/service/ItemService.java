@@ -3,7 +3,7 @@ package com.example.itemservice.service;
 import com.example.itemservice.model.Item;
 import com.example.itemservice.repository.ItemRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +22,7 @@ import java.util.UUID;
  * @version 1.0
  */
 @Service
+@Transactional
 public class ItemService {
     
     private static final Logger log = LoggerFactory.getLogger(ItemService.class);
@@ -31,9 +32,9 @@ public class ItemService {
     /**
      * Constructs an ItemService with the specified repository.
      *
-     * @param itemRepository the repository for item data access
+     * @param itemRepository the repository for item data access (will use primary bean)
      */
-    public ItemService(@Qualifier("databaseItemRepository") ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
     
@@ -47,6 +48,7 @@ public class ItemService {
      * @return the created item
      * @throws IllegalArgumentException if an item with the same UPC already exists
      */
+    @Transactional 
     public Item createItem(String description, Double weight, Double volume, String upc) {
         log.info("Creating new item with description: {}, weight: {}, volume: {}, UPC: {}", 
                 description, weight, volume, upc);
@@ -73,6 +75,7 @@ public class ItemService {
      * @param id the UUID of the item
      * @return an Optional containing the item if found
      */
+    @Transactional(readOnly = true)
     public Optional<Item> getItemById(UUID id) {
         log.debug("Retrieving item by ID: {}", id);
         return itemRepository.findById(id);
@@ -84,6 +87,7 @@ public class ItemService {
      * @param upc the UPC code of the item
      * @return an Optional containing the item if found
      */
+    @Transactional(readOnly = true)
     public Optional<Item> getItemByUpc(String upc) {
         log.debug("Retrieving item by UPC: {}", upc);
         return itemRepository.findByUpc(upc);
@@ -94,6 +98,7 @@ public class ItemService {
      *
      * @return a list of all items
      */
+    @Transactional(readOnly = true)
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }
@@ -109,6 +114,7 @@ public class ItemService {
      * @return the updated item
      * @throws IllegalArgumentException if the item doesn't exist or if the UPC conflicts with another item
      */
+    @Transactional
     public Item updateItem(UUID id, String description, Double weight, Double volume, String upc) {
         Optional<Item> existingItemOpt = itemRepository.findById(id);
         if (existingItemOpt.isEmpty()) {
@@ -136,6 +142,7 @@ public class ItemService {
      * @param id the UUID of the item to delete
      * @return true if the item was found and deleted, false otherwise
      */
+    @Transactional
     public boolean deleteItem(UUID id) {
         try {
             itemRepository.deleteById(id);

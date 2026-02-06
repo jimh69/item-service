@@ -1,11 +1,19 @@
 spring:
   application:
     name: item-service
-  main:
-    allow-bean-definition-overriding: true
+  cloud:
+    config:
+      uri: http://localhost:8888/config
+      name: item-service
+      profile: dev
+      label: null
+      fail-fast: true
+      username: configuser
+      password: configpass
+    bootstrap:
+      enabled: true
 
-# Logging for bootstrap configuration
 logging:
   level:
-    org.springframework.cloud: INFO
-    org.springframework.boot.context.config: INFO
+    org.springframework.cloud: DEBUG
+    org.springframework.cloud.config: DEBUG

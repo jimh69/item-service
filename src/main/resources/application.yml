@@ -1,57 +1,39 @@
 spring:
   application:
+    name: item-service
     version: @project.version@
   main:
     allow-bean-definition-overriding: true
   config:
     import: "optional:configserver:"
-  cloud:
-    config:
-      uri: http://localhost:8888/config
-      profile: dev
-      label: main
-      fail-fast: false
-      retry:
-        initial-interval: 1000
-        max-interval: 2000
-        max-attempts: 3
-      enabled: true
-      import-check:
-        enabled: false
-      username: configuser
-      password: configpass
-  jpa:
-    enabled: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: validate  # Changed from 'update' to 'validate' to work with Flyway
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          time_zone: UTC
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
     time-zone: UTC
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    validate-on-migrate: true
+  cloud:
+    config:
+      allow-override: true
+      override-none: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: ${database.dialect:org.hibernate.dialect.PostgreSQLDialect}
+    hibernate:
+      ddl-auto: validate 
 
 server:
   port: 8080
 
 logging:
   level:
-    com.example.itemservice: INFO
+    com.example.itemservice: DEBUG
     org.springframework.web: INFO
     org.springframework.boot: INFO
-    org.springframework.cloud: INFO
+    org.springframework.cloud: DEBUG
     org.hibernate.validator: WARN
     com.example.itemservice.config.ConfigServerConnectionMonitor: INFO
-    org.flywaydb: INFO  # Enable Flyway logging for debugging
+    org.springframework.orm.jpa: WARN
+    org.hibernate: WARN
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   file:
@@ -65,19 +47,6 @@ config:
   polling:
     enabled: true
     interval: 30000
-
-# Database configuration (can be overridden by Spring Cloud Config)
-database:
-  enabled: true
-  host: localhost
-  port: 5432
-  name: testbed
-  username: postgres
-  password: falcon69
-  driver-class-name: org.postgresql.Driver
-  pool-size: 5
-  timeout: 10000
-  debug: true
 
 springdoc:
   swagger-ui:
