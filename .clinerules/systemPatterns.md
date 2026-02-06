@@ -13,10 +13,10 @@ The Item Service API follows a layered architecture pattern with clear separatio
 │                    (Business Logic)                     │
 ├─────────────────────────────────────────────────────────┤
 │                    Data Access Layer                    │
-│                   (Repository Pattern)                  │
+│                   (JPA Repository)                      │
 ├─────────────────────────────────────────────────────────┤
 │                      Data Layer                         │
-│                   (In-Memory Storage)                   │
+│                   (PostgreSQL Database)                 │
 ├─────────────────────────────────────────────────────────┤
 │                   Configuration Layer                   │
 │              (Spring Cloud Config Client)               │
@@ -27,8 +27,8 @@ The Item Service API follows a layered architecture pattern with clear separatio
 
 ### 1. Repository Pattern
 - **Interface**: `ItemRepository` defines the contract for data operations
-- **Implementation**: `InMemoryItemRepository` provides thread-safe in-memory storage
-- **Benefits**: Easy to replace with database implementation, testable, decoupled from business logic
+- **Implementation**: Spring Data JPA with PostgreSQL database
+- **Benefits**: Automatic query generation, transaction management, connection pooling
 
 ### 2. Service Layer Pattern
 - **Class**: `ItemService` encapsulates business logic and orchestration
@@ -54,7 +54,7 @@ The Item Service API follows a layered architecture pattern with clear separatio
 
 ### Core Dependencies
 ```
-ItemController → ItemService → ItemRepository → InMemoryItemRepository
+ItemController → ItemService → ItemRepository → JPA Repository
 ItemController → ConfigPoller → ContextRefresher
 ConfigPoller → ConfigServerConnectionMonitor
 ```
@@ -71,10 +71,10 @@ ConfigPoller → ConfigServerConnectionMonitor
 
 ## Thread Safety Patterns
 
-### ConcurrentHashMap Usage
-- **Primary Storage**: `Map<UUID, Item>` for ID-based lookups
-- **Secondary Index**: `Map<String, Item>` for UPC-based lookups
-- **Benefits**: Thread-safe operations without explicit synchronization
+### JPA Transaction Management
+- **@Transactional**: Ensures thread-safe database operations
+- **ACID Properties**: Automatic transaction management with rollback on failure
+- **Benefits**: Database-level thread safety and data consistency
 
 ### Immutable Operations
 - **ID Generation**: UUID.randomUUID() for new items
@@ -109,39 +109,36 @@ ConfigPoller → ConfigServerConnectionMonitor
 - **spring.cloud.config.uri**: Config server URL
 - **spring.cloud.config.fail-fast**: Fail startup if config unavailable
 
-## Future Database Integration Pattern
+## Database Integration Pattern
 
 ### Repository Interface Contract
-The `ItemRepository` interface is designed for easy database integration:
+The `ItemRepository` interface extends Spring Data JPA's JpaRepository for database operations:
 
 ```java
-// Current in-memory implementation
 @Repository
-public class InMemoryItemRepository implements ItemRepository
-
-// Future database implementation
-@Repository
-public class DatabaseItemRepository implements ItemRepository
+public interface ItemRepository extends JpaRepository<Item, UUID> {
+    Optional<Item> findByUpc(String upc);
+    boolean existsByUpc(String upc);
+}
 ```
 
-### Migration Strategy
-1. Add Spring Data JPA dependency
-2. Create JPA entity mapping
-3. Implement database-backed repository
-4. Update application configuration
-5. Maintain API compatibility
+### Current Implementation
+- **JPA Entity**: Item class serves as JPA entity with proper annotations
+- **Database**: PostgreSQL with HikariCP connection pooling
+- **Transaction Management**: Spring @Transactional annotations
+- **Query Methods**: Custom JPA query methods for UPC lookups
 
 ## Performance Considerations
 
-### Memory Management
-- **ConcurrentHashMap**: Efficient concurrent access
-- **Object Pooling**: Reuse objects where possible
-- **Lazy Loading**: Load data only when needed
+### Database Management
+- **Connection Pooling**: HikariCP for efficient database connections
+- **Query Optimization**: Spring Data JPA automatic query generation
+- **Transaction Management**: Optimized transaction boundaries with @Transactional
 
 ### Search Optimization
-- **Secondary Index**: UPC lookups in O(1) time
-- **Stream API**: Efficient filtering for search operations
-- **Pagination**: Future consideration for large datasets
+- **JPA Queries**: findByUpc() method for efficient UPC lookups
+- **Repository Methods**: Optimized query methods for common operations
+- **Pagination**: Ready for Spring Data JPA pagination support
 
 ## Security Patterns
 
@@ -182,7 +179,68 @@ public class DatabaseItemRepository implements ItemRepository
 - **Configuration Changes**: Track configuration refresh events
 
 ### Production Readiness
-- **Health Checks**: Ready for Spring Boot Actuator integration
-- **Configuration Status**: Manual and automatic status endpoints
-- **Error Handling**: Comprehensive error responses with appropriate HTTP codes
-- **Documentation**: Swagger/OpenAPI integration for API documentation
+- **Structured Logging**: Logback configuration with separate appenders for requests, responses, and service logs
+- **Configuration Management**: Spring Cloud Config with automatic polling and manual refresh
+- **Error Handling**: Comprehensive error responses with appropriate HTTP status codes
+- **Documentation**: Swagger/OpenAPI integration for API documentation and testing
+- **Health Monitoring**: Ready for Spring Boot Actuator integration for health checks and metrics
+
+## Advanced Configuration Management
+
+### ConfigPoller Implementation
+- **Automatic Polling**: Scheduled task every 30 seconds using @Scheduled
+- **Change Detection**: Compares current configuration with previous state
+- **Context Refresh**: Triggers Spring context refresh when changes detected
+- **Error Handling**: Graceful handling of configuration server unavailability
+
+### ConfigServerConnectionMonitor
+- **Connection Status**: Tracks connection state to configuration server
+- **Detailed Logging**: Comprehensive logging of connection attempts and failures
+- **Health Monitoring**: Provides insights into configuration server availability
+- **Operational Visibility**: Enables monitoring of configuration management health
+
+### Configuration Endpoints
+- **Manual Refresh**: POST /api/items/config/refresh for immediate configuration refresh
+- **Status Monitoring**: GET /api/items/config/status for configuration status information
+- **Health Integration**: Ready for Spring Boot Actuator health check integration
+
+## Database Integration Pattern
+
+### Repository Interface Design
+- **Interface Contract**: Clean separation between interface and implementation
+- **Method Signatures**: Designed for easy database implementation
+- **Error Handling**: Consistent error handling patterns
+- **Thread Safety**: Maintains thread safety guarantees
+
+### JPA Integration
+- **Entity Mapping**: JPA annotations and entity mapping
+- **Repository Implementation**: Spring Data JPA repository pattern support
+- **Transaction Management**: Spring transaction management integration
+- **Connection Pooling**: Database connection optimization ready
+
+## Production Deployment Patterns
+
+### Configuration Externalization
+- **Environment Variables**: Support for environment-specific configuration
+- **Property Files**: Multiple property file support for different environments
+- **Secrets Management**: Ready for integration with secrets management systems
+- **Configuration Validation**: Validation of configuration values at startup
+
+### Monitoring and Alerting
+- **Health Checks**: Ready for health check endpoint implementation
+- **Metrics Collection**: Framework for metrics collection and monitoring
+- **Alerting**: Ready for integration with alerting systems
+- **Log Aggregation**: Structured logging ready for log aggregation systems
+
+### Scalability Patterns
+- **Stateless Design**: Application designed for horizontal scaling
+- **Load Balancing**: Ready for load balancer integration
+- **Caching Strategy**: Ready for caching layer implementation
+- **Database Scaling**: Designed for database scaling patterns
+
+## Production Readiness Features
+- **Structured Logging**: Logback configuration with separate appenders for requests, responses, and service logs
+- **Configuration Management**: Spring Cloud Config with automatic polling and manual refresh
+- **Error Handling**: Comprehensive error responses with appropriate HTTP status codes
+- **Documentation**: Swagger/OpenAPI integration for API documentation and testing
+- **Health Monitoring**: Ready for Spring Boot Actuator integration for health checks and metrics

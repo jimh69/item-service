@@ -56,8 +56,8 @@
 ## Technical Constraints
 
 ### Performance Constraints
-- **Memory Usage**: In-memory storage limited by JVM heap size
-- **Concurrent Access**: Thread-safe operations using ConcurrentHashMap
+- **Memory Usage**: Database storage with efficient connection pooling
+- **Concurrent Access**: Thread-safe operations using JPA transactions
 - **Response Time**: Target <100ms for basic CRUD operations
 - **Scalability**: Single instance, stateless design for horizontal scaling
 
@@ -72,7 +72,7 @@
 - **Spring Boot**: Version 4.0.2 with Jakarta EE 9+ support
 - **Spring Cloud**: Version 2025.1.1 for configuration management
 - **Maven**: Compatible with Maven 3.6+
-- **Database**: Currently in-memory only, designed for future database integration
+- **Database**: PostgreSQL with Spring Data JPA integration
 
 ## Dependencies
 
@@ -80,6 +80,7 @@
 - **Spring Boot Starter Web**: Web MVC framework and embedded Tomcat
 - **Spring Boot Starter Validation**: Bean validation support
 - **Spring Cloud Starter Config**: Configuration management client
+- **Spring Boot Starter Data JPA**: JPA repository support with PostgreSQL
 - **Lombok**: Runtime dependency for generated code
 - **Springdoc OpenAPI**: Swagger/OpenAPI documentation
 
@@ -89,7 +90,6 @@
 - **Mockito**: Mocking framework for unit tests
 
 ### Optional Dependencies (Future)
-- **Spring Data JPA**: For database integration
 - **Spring Security**: For authentication and authorization
 - **Spring Boot Actuator**: For monitoring and metrics
 - **Docker**: For containerization
@@ -147,10 +147,16 @@
 - **Monitoring**: Comprehensive logging and configuration status endpoints
 - **Configuration Management**: Externalized configuration with automatic refresh
 
+### Production Readiness Features
+- **Structured Logging**: Logback configuration with separate appenders for requests, responses, and service logs
+- **Configuration Management**: Spring Cloud Config with automatic polling and manual refresh
+- **Error Handling**: Comprehensive error responses with appropriate HTTP status codes
+- **Documentation**: Swagger/OpenAPI integration for API documentation and testing
+- **Health Monitoring**: Ready for Spring Boot Actuator integration for health checks and metrics
+
 ### Future Enhancements
 - **Docker Support**: Containerization for consistent deployment
 - **Cloud Native**: Kubernetes and cloud platform support
 - **CI/CD**: GitHub Actions or similar for automated deployment
 - **Monitoring**: Integration with monitoring tools (Prometheus, Grafana)
 - **Authentication**: Spring Security integration for API protection
-- **Database Integration**: Spring Data JPA for persistent storage

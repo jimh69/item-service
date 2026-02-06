@@ -23,12 +23,11 @@
 - **Configuration Properties**: Configurable polling interval and enable/disable settings
 
 ### Data Management
-- **Thread-Safe Storage**: ConcurrentHashMap implementation for concurrent access
+- **Thread-Safe Storage**: JPA transaction management ensures thread-safe database operations
 - **Auto-generated IDs**: UUID generation for new items
 - **Timestamp Management**: Automatic createdAt and updatedAt timestamps
 - **UPC Uniqueness**: Validation prevents duplicate UPC codes
-- **Secondary Indexing**: Efficient O(1) UPC lookups with Map<String, Item>
-- **Data Persistence**: In-memory storage with proper CRUD operations
+- **Data Persistence**: PostgreSQL database with Spring Data JPA and HikariCP connection pooling
 
 ### Input Validation
 - **Field Validation**: Jakarta Bean Validation for all required fields
@@ -50,6 +49,12 @@
 - **Error Handling**: Comprehensive error responses with appropriate HTTP status codes
 - **Documentation**: Swagger/OpenAPI integration for API documentation and testing
 - **Health Monitoring**: Ready for Spring Boot Actuator integration for health checks and metrics
+
+### Advanced Features
+- **Configuration Monitoring**: ConfigServerConnectionMonitor provides detailed connection logging
+- **Database Migration Scripts**: V1__create_item_table.sql for future Spring Data JPA integration
+- **Enhanced Configuration**: ConfigPoller with automatic polling and manual refresh capabilities
+- **Production Logging**: Logback configuration with structured logging and UTC timezone
 
 ## What's Left to Build 🚧
 
@@ -94,6 +99,8 @@ The Minimum Viable Product is fully functional and production-ready with advance
 - Production-ready logging configuration
 - Comprehensive documentation and testing scripts
 - Configuration monitoring and manual refresh capabilities
+- Database migration scripts for future Spring Data JPA integration
+- Enhanced configuration management with ConfigServerConnectionMonitor
 
 ### 🔄 **Ready for Enhancement**
 The codebase is well-structured and ready for the next phase of development:
@@ -115,12 +122,10 @@ The application is designed for growth and production deployment:
 
 ### Current Limitations
 - **No Authentication**: API is publicly accessible (intentional for MVP)
-- **In-Memory Storage**: Data lost on application restart
 - **No Caching**: All operations hit primary storage
 - **Basic Observability**: Limited to logging, ready for metrics integration
 
 ### Performance Considerations
-- **Memory Usage**: In-memory storage limited by JVM heap size
 - **Search Performance**: Linear search for description queries
 - **No Pagination**: All items returned in list operations
 - **No Rate Limiting**: Potential for API abuse
