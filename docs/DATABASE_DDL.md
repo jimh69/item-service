@@ -22,6 +22,60 @@ database:
   debug: true
 ```
 
+## Spring Cloud Config Retry Configuration
+
+The application uses Spring Cloud Config for externalized configuration management with robust retry mechanisms to ensure reliable connection to the configuration server:
+
+```yaml
+spring:
+  cloud:
+    config:
+      retry:
+        initial-interval: 2000      # Initial retry delay (2 seconds)
+        max-interval: 10000         # Max retry delay (10 seconds)
+        multiplier: 1.5             # Exponential backoff multiplier
+        max-attempts: 12            # Maximum retry attempts
+      fail-fast: true              # Fail startup if config unavailable after retries
+      uri: http://localhost:8888/config
+      name: item-service
+      profile: dev
+      label: null
+      username: configuser
+      password: configpass
+```
+
+### Retry Mechanism Details
+
+- **Exponential Backoff**: Connection attempts use exponential backoff starting at 2 seconds, increasing by 1.5x each retry
+- **Maximum Delay**: Retry intervals cap at 10 seconds to prevent excessive wait times
+- **Retry Limit**: Maximum of 12 retry attempts before failing permanently
+- **Fail-Fast Behavior**: Application startup fails if configuration server is unavailable after all retries
+- **Connection Monitoring**: Spring Cloud Config provides built-in connection status monitoring and logging
+
+### Connection Resilience
+
+The retry mechanism ensures:
+- **High Availability**: Automatic recovery from temporary network issues
+- **Graceful Degradation**: Application can start with cached configuration if server is temporarily unavailable
+- **Operational Visibility**: Comprehensive logging for troubleshooting connection issues
+- **Performance Optimization**: Exponential backoff prevents overwhelming the configuration server
+
+### Production Configuration
+
+For production environments, consider adjusting retry settings based on your infrastructure:
+
+```yaml
+# Production retry configuration
+spring:
+  cloud:
+    config:
+      retry:
+        initial-interval: 1000      # Start with 1 second
+        max-interval: 5000          # Cap at 5 seconds
+        multiplier: 2.0             # Aggressive backoff
+        max-attempts: 6             # Fewer attempts for faster failure
+```
+
 ## Table Structure
 
 ### `item` Table
