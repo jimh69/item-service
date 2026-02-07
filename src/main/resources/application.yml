@@ -16,7 +16,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: ${database.dialect:org.hibernate.dialect.PostgreSQLDialect}
+        # dialect: ${database.dialect:org.hibernate.dialect.PostgreSQLDialect}
     hibernate:
       ddl-auto: validate 
 
@@ -25,15 +25,11 @@ server:
 
 logging:
   level:
+    root: INFO
     com.example.itemservice: DEBUG
-    org.springframework.web: INFO
-    org.springframework.boot: INFO
-    org.springframework.cloud: DEBUG
-    org.hibernate.validator: WARN
-    com.example.itemservice.config.ConfigServerConnectionMonitor: INFO
-    org.springframework.orm.jpa: WARN
-    org.hibernate: WARN
-    org.springframework.boot.autoconfigure.jdbc: DEBUG
+    org.hibernate.orm.deprecation: ERROR
+    org.springframework.web.HttpLogging: INFO
+    com.example.itemservice.config.ConfigPoller: WARN  
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   file:

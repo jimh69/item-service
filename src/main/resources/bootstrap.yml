@@ -15,5 +15,6 @@ spring:
 
 logging:
   level:
-    org.springframework.cloud: DEBUG
-    org.springframework.cloud.config: DEBUG
+    org.springframework.cloud: WARN
+    org.springframework.cloud.config: WARN
+    org.springframework.core.env.PropertySourcesPropertyResolver: WARN
