@@ -13,6 +13,11 @@ spring:
     config:
       allow-override: true
       override-none: true
+      retry:
+        initial-interval: 2000
+        max-interval: 10000
+        multiplier: 1.5
+        max-attempts: 12
   jpa:
     properties:
       hibernate:
@@ -29,7 +34,8 @@ logging:
     com.example.itemservice: DEBUG
     org.hibernate.orm.deprecation: ERROR
     org.springframework.web.HttpLogging: INFO
-    com.example.itemservice.config.ConfigPoller: WARN  
+    org.springframework.cloud.config: INFO
+    org.springframework.cloud.config.client: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   file:
@@ -38,11 +44,6 @@ logging:
     enabled: true
   http:
     enabled: true
-
-config:
-  polling:
-    enabled: true
-    interval: 30000
 
 springdoc:
   swagger-ui:
