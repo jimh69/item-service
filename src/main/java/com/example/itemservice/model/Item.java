@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -55,6 +56,18 @@ public class Item {
     @Pattern(regexp = "^[A-Z0-9]{12}$", message = "UPC must be 12 characters alphanumeric")
     private String upc;
     
+    @Column(name = "quantity")
+    @Min(value = 0, message = "Quantity must be zero or greater")
+    private Integer quantity;
+
+    @Column(name = "cost", precision = 10, scale = 2)
+    @DecimalMin(value = "0.00", message = "Cost must be zero or greater")
+    private BigDecimal cost;
+
+    @Column(name = "price", precision = 10, scale = 2)
+    @DecimalMin(value = "0.00", message = "Price must be zero or greater")
+    private BigDecimal price;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

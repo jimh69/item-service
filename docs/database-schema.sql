@@ -28,6 +28,12 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- add new columns
+ALTER TABLE item
+ADD COLUMN quantity INT DEFAULT 0,
+ADD COLUMN cost DECIMAL(10,2) DEFAULT 0,
+ADD COLUMN price DECIMAL(10,2) DEFAULT 0;   
+
 -- Create trigger to automatically update the updated_at timestamp
 CREATE TRIGGER update_item_updated_at 
     BEFORE UPDATE ON item 
