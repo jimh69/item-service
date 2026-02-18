@@ -26,7 +26,7 @@ import java.util.UUID;
  * HTTP status codes and responses.</p>
  */
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping("/api/v1/items")
 public class ItemController {
     
     private final ItemService itemService;
