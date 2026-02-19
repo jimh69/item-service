@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -111,11 +112,15 @@ public class ItemService {
      * @param weight the new item weight in kilograms
      * @param volume the new item volume in cubic meters
      * @param upc the new item's UPC code
+     * @param quantity the new item quantity
+     * @param cost the new item cost
+     * @param price the new item price
      * @return the updated item
      * @throws IllegalArgumentException if the item doesn't exist or if the UPC conflicts with another item
      */
     @Transactional
-    public Item updateItem(UUID id, String description, Double weight, Double volume, String upc) {
+    public Item updateItem(UUID id, String description, Double weight, Double volume, String upc,
+                          Integer quantity, BigDecimal cost, BigDecimal price) {
         Optional<Item> existingItemOpt = itemRepository.findById(id);
         if (existingItemOpt.isEmpty()) {
             throw new IllegalArgumentException("Item with ID " + id + " not found");
@@ -132,6 +137,9 @@ public class ItemService {
         existingItem.setWeight(weight);
         existingItem.setVolume(volume);
         existingItem.setUpc(upc);
+        existingItem.setQuantity(quantity);
+        existingItem.setCost(cost);
+        existingItem.setPrice(price);
         
         return itemRepository.save(existingItem);
     }

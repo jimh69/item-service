@@ -109,7 +109,10 @@ public class ItemController {
                     item.getDescription(),
                     item.getWeight(),
                     item.getVolume(),
-                    item.getUpc()
+                    item.getUpc(),
+                    item.getQuantity(),
+                    item.getCost(),
+                    item.getPrice()
             );
             return ResponseEntity.ok(updatedItem);
         } catch (IllegalArgumentException e) {
