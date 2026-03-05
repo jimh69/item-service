@@ -46,9 +46,9 @@ The Item Service API follows a layered architecture pattern with clear separatio
 - **Benefits**: Clean separation between web layer and business logic
 
 ### 5. Configuration Management Pattern
-- **ConfigPoller**: Automatic configuration polling every 30 seconds
-- **ConfigServerConnectionMonitor**: Connection status monitoring and logging
-- **Benefits**: Externalized configuration with automatic refresh capabilities
+- **Spring Cloud Config**: Externalized configuration management with retry mechanism
+- **Connection Monitoring**: Spring Cloud Config client provides connection status logging
+- **Benefits**: Production-ready configuration management with graceful degradation
 
 ## Component Relationships
 

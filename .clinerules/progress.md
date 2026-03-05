@@ -15,12 +15,11 @@
   - `GET /api/items/search` - Search items by description
 
 ### Configuration Management
-- **Spring Cloud Config Integration**: Externalized configuration management
-- **Automatic Polling**: ConfigPoller automatically checks for changes every 30 seconds
-- **Manual Refresh**: POST /api/items/config/refresh endpoint for manual configuration refresh
-- **Status Monitoring**: GET /api/items/config/status endpoint for configuration status
-- **Connection Monitoring**: ConfigServerConnectionMonitor provides detailed connection logging
-- **Configuration Properties**: Configurable polling interval and enable/disable settings
+- **Spring Cloud Config Integration**: Externalized configuration management with retry mechanism
+- **Configuration Retry**: 12 attempts with exponential backoff (2s initial, 10s max, 1.5x multiplier)
+- **Graceful Degradation**: Optional config import allows application to start without config server
+- **Connection Monitoring**: Spring Cloud Config client provides connection status logging
+- **Configuration Properties**: Configurable via environment variables and application.yml
 
 ### Data Management
 - **Thread-Safe Storage**: JPA transaction management ensures thread-safe database operations

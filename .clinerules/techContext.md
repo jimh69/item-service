@@ -51,7 +51,7 @@
 - **Server Port**: 8080 (configurable)
 - **Logging**: INFO level for application, UTC timezone for timestamps
 - **Validation**: Enabled with exception throwing on validation failures
-- **Spring Cloud Config**: Externalized configuration with automatic polling
+- **Spring Cloud Config**: Externalized configuration with retry mechanism
 
 ## Technical Constraints
 
@@ -119,18 +119,19 @@
 ## Configuration Management
 
 ### Spring Cloud Config Integration
-- **Config Server URL**: http://localhost:8888/config
+- **Config Server URL**: http://localhost:8888/config (configurable via CONFIG_SERVER_URI environment variable)
 - **Environment**: dev profile
-- **Branch**: main
-- **Authentication**: Basic auth with configuser/configpass
-- **Retry Configuration**: 3 attempts with exponential backoff
-- **Fail Fast**: Disabled for graceful degradation
+- **Application Name**: item-service
+- **Authentication**: Basic auth via CONFIG_SERVER_USERNAME and CONFIG_SERVER_PASSWORD environment variables
+- **Retry Configuration**: 12 attempts with exponential backoff (2s initial, 10s max, 1.5x multiplier)
+- **Fail Fast**: Enabled (fails startup if config server unavailable)
+- **Config Import**: Optional configserver import in application.yml
 
-### Configuration Polling
-- **Automatic Polling**: Enabled by default, every 30 seconds
-- **Manual Refresh**: POST /api/items/config/refresh endpoint
-- **Status Monitoring**: GET /api/items/config/status endpoint
-- **Connection Monitoring**: Detailed logging of config server connection attempts
+### Configuration Features
+- **Externalized Configuration**: Spring Cloud Config for production environments
+- **Environment Variables**: Support for environment-specific configuration
+- **Graceful Degradation**: Optional config import allows application to start without config server
+- **Connection Monitoring**: Spring Cloud Config client provides connection status logging
 
 ## Deployment Considerations
 
@@ -149,7 +150,7 @@
 
 ### Production Readiness Features
 - **Structured Logging**: Logback configuration with separate appenders for requests, responses, and service logs
-- **Configuration Management**: Spring Cloud Config with automatic polling and manual refresh
+- **Configuration Management**: Spring Cloud Config with retry mechanism and graceful degradation
 - **Error Handling**: Comprehensive error responses with appropriate HTTP status codes
 - **Documentation**: Swagger/OpenAPI integration for API documentation and testing
 - **Health Monitoring**: Ready for Spring Boot Actuator integration for health checks and metrics

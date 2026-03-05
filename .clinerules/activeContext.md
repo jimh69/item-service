@@ -30,11 +30,10 @@ The Item Service API is fully functional and production-ready with all planned f
 - **Layered Architecture**: Clean separation between Controller, Service, Repository
 
 ### ✅ **Advanced Features Complete**
-- **Spring Cloud Config Integration**: Externalized configuration management
-- **Automatic Polling**: ConfigPoller automatically checks for changes every 30 seconds
-- **Manual Refresh**: POST /api/items/config/refresh endpoint for manual configuration refresh
-- **Status Monitoring**: GET /api/items/config/status endpoint for configuration status
-- **Connection Monitoring**: ConfigServerConnectionMonitor provides detailed connection logging
+- **Spring Cloud Config Integration**: Externalized configuration management with retry mechanism
+- **Configuration Retry**: 12 attempts with exponential backoff (2s initial, 10s max, 1.5x multiplier)
+- **Graceful Degradation**: Optional config import allows application to start without config server
+- **Connection Monitoring**: Spring Cloud Config client provides connection status logging
 - **Production-Ready Logging**: Logback configuration with separate appenders
 - **Swagger/OpenAPI**: Modern API documentation integration
 
@@ -51,7 +50,7 @@ The Item Service API is fully functional and production-ready with all planned f
 - **Layered Architecture**: Clear separation between Controller, Service, and Repository layers for maintainability
 - **Repository Pattern**: Interface-based repository design for easy database migration to Spring Data JPA
 - **Thread Safety**: ConcurrentHashMap for concurrent access without explicit synchronization, with secondary index for UPC lookups
-- **Configuration Management**: Spring Cloud Config integration with automatic polling and manual refresh capabilities
+- **Configuration Management**: Spring Cloud Config integration with retry mechanism and graceful degradation
 - **Validation Strategy**: Multi-layer validation using Jakarta Bean Validation at model and controller levels
 
 ### Technology Choices
