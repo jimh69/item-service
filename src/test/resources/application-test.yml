@@ -1,0 +1,24 @@
+spring:
+  cloud:
+      config:
+        enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true  
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+
+logging:
+  level:
+    com.example.itemservice: DEBUG
+    org.springframework.orm.jpa: WARN
+    org.hibernate.SQL: WARN
