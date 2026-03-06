@@ -32,7 +32,7 @@ import java.util.UUID;
 public class Item {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @EqualsAndHashCode.Include
     private UUID id;
     
@@ -88,7 +88,7 @@ public class Item {
      */
     public static Item create(String description, Double weight, Double volume, String upc) {
         return Item.builder()
-                .id(UUID.randomUUID())
+                //.id(UUID.randomUUID())
                 .description(description)
                 .weight(weight)
                 .volume(volume)
