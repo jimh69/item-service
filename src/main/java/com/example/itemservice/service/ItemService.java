@@ -148,7 +148,7 @@ public class ItemService {
      * Deletes an item by its unique identifier.
      *
      * @param id the UUID of the item to delete
-     * @return true if the item was found and deleted, false otherwise
+     * @return true if no exception occurred, false otherwise
      */
     @Transactional
     public boolean deleteItem(UUID id) {
