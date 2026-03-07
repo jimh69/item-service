@@ -2,9 +2,6 @@ package com.example.itemservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.persistence.autoconfigure.EntityScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Main application class for the Item Service.
@@ -19,9 +16,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * - Spring Cloud Config client with automatic polling every 30 seconds
  */
 @SpringBootApplication
-@EntityScan("com.example.itemservice.model") 
-@EnableJpaRepositories("com.example.itemservice.repository")
-@EnableScheduling
 public class ItemServiceApplication {
 
     /**
