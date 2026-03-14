@@ -4,11 +4,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import jakarta.validation.ValidationException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ItemTest {
