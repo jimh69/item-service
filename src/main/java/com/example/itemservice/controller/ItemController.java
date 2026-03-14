@@ -128,10 +128,10 @@ public class ItemController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable UUID id) {
-        boolean deleted = itemService.deleteItem(id);
-        if (deleted) {
+        try {
+            itemService.deleteItem(id);
             return ResponseEntity.noContent().build();
-        } else {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -144,11 +144,7 @@ public class ItemController {
      */
     @GetMapping("/search")
     public ResponseEntity<List<Item>> searchItems(@RequestParam String description) {
-        List<Item> items = itemService.getAllItems();
-        List<Item> matchingItems = items.stream()
-                .filter(item -> item.getDescription().toLowerCase()
-                        .contains(description.toLowerCase()))
-                .toList();
-        return ResponseEntity.ok(matchingItems);
+        List<Item> items = itemService.searchItems(description);
+        return ResponseEntity.ok(items);
     }
 }

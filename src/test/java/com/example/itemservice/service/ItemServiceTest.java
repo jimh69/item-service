@@ -298,14 +298,21 @@ class ItemServiceTest {
     // deleteItem() Tests
 
     @Test
-    void deleteItem_ShouldReturnTrue() {
+    void deleteItem_ShouldDeleteSuccessfully() {
         UUID itemId = UUID.randomUUID();
+        when(itemRepository.existsById(itemId)).thenReturn(true);
 
-        boolean result = itemService.deleteItem(itemId);
-
-        assertTrue(result);
+        itemService.deleteItem(itemId);
 
         verify(itemRepository).deleteById(itemId);
+    }
+
+    @Test
+    void deleteItem_ShouldThrowExceptionWhenItemNotFound() {
+        UUID itemId = UUID.randomUUID();
+        when(itemRepository.existsById(itemId)).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> itemService.deleteItem(itemId));
     }
 
     // Logging Tests

@@ -240,7 +240,7 @@ class ItemControllerTest {
   void deleteItem_ShouldDeleteItem() throws Exception {
     UUID itemId = UUID.randomUUID();
 
-    when(itemService.deleteItem(itemId)).thenReturn(true);
+    doNothing().when(itemService).deleteItem(itemId);
 
     mockMvc.perform(delete("/api/v1/items/{id}", itemId))
         .andExpect(status().isNoContent());
@@ -252,7 +252,7 @@ class ItemControllerTest {
   void deleteItem_ShouldReturnNotFoundWhenItemNotFound() throws Exception {
     UUID itemId = UUID.randomUUID();
 
-    when(itemService.deleteItem(itemId)).thenReturn(false);
+    doThrow(new IllegalArgumentException("Item not found")).when(itemService).deleteItem(itemId);
 
     mockMvc.perform(delete("/api/v1/items/{id}", itemId))
         .andExpect(status().isNotFound());
@@ -280,7 +280,7 @@ class ItemControllerTest {
         .upc("B2C3D4E5F6G7")
         .build();
 
-    when(itemService.getAllItems()).thenReturn(Arrays.asList(item1, item2));
+    when(itemService.searchItems("test")).thenReturn(Arrays.asList(item1, item2));
 
     mockMvc.perform(get("/api/v1/items/search")
         .param("description", "test"))
@@ -289,26 +289,18 @@ class ItemControllerTest {
         .andExpect(jsonPath("$[0].description").value("Test Item 1"))
         .andExpect(jsonPath("$[1].description").value("Test Item 2"));
 
-    verify(itemService).getAllItems();
+    verify(itemService).searchItems("test");
   }
 
   @Test
   void searchItems_ShouldReturnEmptyListWhenNoMatches() throws Exception {
-    Item item = Item.builder()
-        .id(UUID.randomUUID())
-        .description("Unrelated Item")
-        .weight(1.0)
-        .volume(1.0)
-        .upc("A1B2C3D4E5F6")
-        .build();
-
-    when(itemService.getAllItems()).thenReturn(Arrays.asList(item));
+    when(itemService.searchItems("test")).thenReturn(Arrays.asList());
 
     mockMvc.perform(get("/api/v1/items/search")
         .param("description", "test"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(0));
 
-    verify(itemService).getAllItems();
+    verify(itemService).searchItems("test");
   }
 }

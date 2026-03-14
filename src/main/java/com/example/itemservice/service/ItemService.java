@@ -49,7 +49,6 @@ public class ItemService {
      * @return the created item
      * @throws IllegalArgumentException if an item with the same UPC already exists
      */
-    @Transactional 
     public Item createItem(String description, Double weight, Double volume, String upc) {
         log.info("Creating new item with description: {}, weight: {}, volume: {}, UPC: {}", 
                 description, weight, volume, upc);
@@ -103,6 +102,11 @@ public class ItemService {
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public List<Item> searchItems(String description) {
+        return itemRepository.findByDescriptionContainingIgnoreCase(description);
+    }
     
     /**
      * Updates an existing item with the specified properties.
@@ -118,7 +122,6 @@ public class ItemService {
      * @return the updated item
      * @throws IllegalArgumentException if the item doesn't exist or if the UPC conflicts with another item
      */
-    @Transactional
     public Item updateItem(UUID id, String description, Double weight, Double volume, String upc,
                           Integer quantity, BigDecimal cost, BigDecimal price) {
         Optional<Item> existingItemOpt = itemRepository.findById(id);
@@ -150,13 +153,10 @@ public class ItemService {
      * @param id the UUID of the item to delete
      * @return true if no exception occurred, false otherwise
      */
-    @Transactional
-    public boolean deleteItem(UUID id) {
-        try {
-            itemRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
+    public void deleteItem(UUID id) {
+        if (!itemRepository.existsById(id)) {
+            throw new IllegalArgumentException("Item with ID " + id + " not found");
         }
+        itemRepository.deleteById(id);
     }
 }
